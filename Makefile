@@ -29,11 +29,15 @@ OBJ := $(C_FILES:.c=.o)
 
 all: exe.bin
 
-exe.bin: $(OBJ)
-	$(LD) $(LDFLAGS) $(INTERNAL_LDFLAGS) $(OBJ) -o $@
+exe.bin: bootsect/bootsect.bin $(OBJ)
+	$(LD) $(LDFLAGS) $(INTERNAL_LDFLAGS) $(OBJ) -o stage2.bin
+	cat bootsect/bootsect.bin stage2.bin > $@
+
+bootsect/bootsect.bin: bootsect/bootsect.asm
+	cd bootsect && nasm bootsect.asm -fbin -o bootsect.bin
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(INTERNAL_CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJ)
+	rm -f $(OBJ) bootsect/bootsect.bin exe.bin
