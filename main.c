@@ -6,10 +6,15 @@ asm (
 );
 
 #include <drivers/vga_textmode.h>
+#include <lib/real.h>
 
 void main(int bootDrive) {
-	// TODO
 	init_vga_textmode();
-	text_write("hello world", 11);
-	for (;;);
+	text_write("exevel\n\n", 11);
+	for (;;) {
+		struct rm_regs r = {0};
+		rm_int(0x16, &r, &r);
+		char c = (char)(r.eax & 0xff);
+		text_write(&c, 1);
+	}	
 }
