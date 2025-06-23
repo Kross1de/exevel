@@ -1,9 +1,9 @@
 asm (
-		".section .entry\n\t"
-		"xor dh, dh\n\t"
-		"push edx\n\t"
-		"call main\n\t"
-    );
+    ".section .entry\n\t"
+    "xor dh, dh\n\t"
+    "push edx\n\t"
+    "call main\n\t"
+);
 
 #include <drivers/vga_textmode.h>
 
