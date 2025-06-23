@@ -40,4 +40,4 @@ bootsect/bootsect.bin: bootsect/bootsect.asm
 	$(CC) $(CFLAGS) $(INTERNAL_CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJ) bootsect/bootsect.bin exe.bin
+	rm -f $(OBJ) bootsect/bootsect.bin *.bin

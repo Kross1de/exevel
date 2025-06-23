@@ -15,8 +15,6 @@ initializeCS:
 	mov	sp, 0x7C00
 	sti
 
-mov	byte [DriveNumber], dl
-
 mov	si, LoadingMsg
 call	print
 
@@ -27,7 +25,7 @@ call	print
 
 mov	ax, 1
 mov	ebx, 0x7E00
-mov	cx, 7
+mov	cx, 1 
 call	ReadSectors
 
 jc	err
@@ -65,3 +63,64 @@ DriveNumber	db 0
 times 0x1b8-($-$$) db 0
 times 510-($-$$) db 0
 dw 0xaa55
+
+; ********************* Stage 2 *********************
+
+; ***** A20 *****
+
+call enable_a20
+jc err
+
+; Enable 4GiB limits
+
+lgdt [GDT]						; Load the GDT
+
+cli
+
+mov eax, cr0
+or eax, 00000001b
+mov cr0, eax
+
+jmp 0x08:.pmodeu
+
+.pmodeu:
+
+mov ax, 0x10
+mov ds, ax
+mov es, ax
+mov fs, ax
+mov gs, ax
+mov ss, ax
+
+mov eax, cr0
+and eax, 11111110b
+mov cr0, eax
+
+jmp 0x0000:.unreal_mode
+
+.unreal_mode:
+
+xor ax, ax
+mov ds, ax
+mov es, ax
+mov fs, ax
+mov gs, ax
+mov ss, ax
+
+sti
+
+; Load stage 3
+
+mov ax, 2
+mov ebx, 0x8000
+mov cx, 6
+call ReadSectors 
+
+jc err
+
+jmp 0x8000
+
+%include 'a20_enabler.inc'
+%include 'gdt.inc'
+
+times 1024-($-$$) db 0
