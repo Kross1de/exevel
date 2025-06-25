@@ -7,10 +7,13 @@ asm (
 
 #include <drivers/vga_textmode.h>
 #include <lib/real.h>
+#include <lib/print.h>
 
 void main(int bootDrive) {
 	init_vga_textmode();
-	text_write("exevel\n\n", 11);
+	print("Exevel\n\n");
+	print("=> Boot drive: %x\n", bootDrive);
+	print("\n");
 	for (;;) {
 		struct rm_regs r = {0};
 		rm_int(0x16, &r, &r);
