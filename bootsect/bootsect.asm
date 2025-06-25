@@ -70,7 +70,7 @@ dw 0xaa55
 
 mov ax, 2
 mov ebx, 0x8000
-mov cx, 6 
+mov cx, 6
 call ReadSectors
 
 jc err
