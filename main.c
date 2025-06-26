@@ -8,12 +8,19 @@ asm (
 #include <drivers/vga_textmode.h>
 #include <lib/real.h>
 #include <lib/print.h>
+#include <lib/types.h>
+
+extern symbol bss_begin;
+extern symbol bss_end;
 
 void main(int bootDrive) {
+	// Zero out .bss section
+	for (uint8_t *p = bss_begin; p < bss_end; p++)
+		*p = 0;
+
 	init_vga_textmode();
 	print("Exevel\n\n");
-	print("=> Boot drive: %x\n", bootDrive);
-	print("\n");
+	print("=> Boot drive: %x\n\n", bootDrive);
 	for (;;) {
 		struct rm_regs r = {0};
 		rm_int(0x16, &r, &r);
